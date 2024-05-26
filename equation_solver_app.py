@@ -1,6 +1,47 @@
 import numpy as np
 import keras
 import cv2
+import hashlib
+import hashlib
+
+# Base of a user login system
+user_database = {}
+
+def encrypt_password(password):
+    salt = "tajna_sól"
+    password_with_salt = password + salt
+    return hashlib.sha256(password_with_salt.encode()).hexdigest()
+
+def register_user(username, password):
+    if username in user_database:
+        print("User already exists!")
+        return False
+    user_database[username] = encrypt_password(password)
+    print("User registered successfully!")
+    return True
+
+def login_user(username, password):
+    if username not in user_database:
+        print("User does not exist!")
+        return False
+    if user_database[username] == encrypt_password(password):
+        print("Login successful!")
+        return True
+    print("Incorrect password!")
+    return False
+
+login = input("Provide your login please: ")
+password = input("Provide your password please: ")
+
+choice = input("Do you want to register or login? (r/l): ").strip().lower()
+try:
+    if choice == 'r':
+        register_user(login, password)
+    if choice == 'l':
+        login_user(login, password)
+except:
+    print("Invalid input!")
+
 
 
 # Model and parameters loading
@@ -13,6 +54,8 @@ resized_images = []
 predicted_symbols = []
 string_to_int = []
 path = input("Please provide the path to your image (e.g. examples/2137plus420.png) : ")
+
+
 
 # Equation solving
 image = cv2.imread(path, 0)
